@@ -1,5 +1,12 @@
 # NoFrills Price Combiner
-A simple script to combine a bunch of NoFrills carts into 1 csv for communal shopping purposes in these interesting times
+Why all go grocery shopping when it only takes one ~~mule~~ person to physically go to the store and pick stuff up? 
+
+This is a simple script to combine a bunch of NoFrills carts into 1 csv for communal shopping purposes in these interesting times.
+It was designed to be lightweight, and work for any number of people.
+
+Once everything has been put together, then a .csv file with everything on it will be created
+![](instructional_images/output.png)
+
 
 ## How to use (User) ##
 If you've been sent this page and asked to follow instructions, then these are them:
@@ -25,6 +32,9 @@ If you're the one running the script, this is what you need to know
 2. Put this in the "Data" Folder.
 3. Run Main.py.
 4. A .csv of all of the selections should be created.
+
+Output should look like this:
+![](instructional_images/output.png)
 
 ## Issues ##
 - would be nice if this worked with more websites
