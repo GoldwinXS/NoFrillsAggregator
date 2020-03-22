@@ -27,4 +27,4 @@ If you're the one running the script, this is what you need to know
 4. A .csv of all of the selections should be created.
 
 ## Issues ##
-- this project is not complete yet
+- would be nice if this worked with more websites
