@@ -15,7 +15,7 @@ If you've been sent this page and asked to follow instructions, then these are t
 5. Save as "something.webarchive".
 ![](instructional_images/as_type.png)
 6. Send that file to the person who sent you this link.
-![](instructional_images/find_store.png)
+![](instructional_images/meme.png)
 
 
 ## How to use (Developer) ##
