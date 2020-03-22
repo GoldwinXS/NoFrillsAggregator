@@ -1,0 +1,30 @@
+# NoFrills Price Combiner
+A simple script to combine a bunch of NoFrills carts into 1 csv for communal shopping purposes in these interesting times
+
+## How to use (User) ##
+If you've been sent this page and asked to follow instructions, then these are them:
+
+1. Shop at your leisure at your local NoFrills (important to ensure items are available).
+![](instructional_images/find_store.png)
+2. Shop to your hearts content.
+![](instructional_images/buy_stuff.png)
+3. Click on your cart in the upper left and then click on "Checkout".
+![](instructional_images/checkout.png)
+4. Right-click anywhere on the page and select "Save Page As...".
+![](instructional_images/save_page.png)
+5. Save as "something.webarchive".
+![](instructional_images/as_type.png)
+6. Send that file to the person who sent you this link.
+![](instructional_images/find_store.png)
+
+
+## How to use (Developer) ##
+If you're the one running the script, this is what you need to know
+0. As always, install requirements from requirements.txt
+1. Save each .webarchive file with the name of the person who sent it to you.
+2. Put this in the "Data" Folder.
+3. Run Main.py.
+4. A .csv of all of the selections should be created.
+
+## Issues ##
+- this project is not complete yet
