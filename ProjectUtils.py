@@ -3,11 +3,13 @@ import webarchive, bs4, os
 import numpy as np
 
 cart_entry_class = 'cart-entry__content cart-entry__content--product-name'
+
 qty_class = 'quantity-selector__quantity__input'
 unit_price_class = 'price__value cart-entry__content__price__value'
+htm_unit_price_class = 'price price--unit-price cart-entry__content__price cart-entry__content__price--unit-price'
 taxes_class = 'tax__button'
 
-get_webarchive_file_names = lambda: [file for file in os.listdir('data/') if file.endswith('.webarchive')]
+get_webarchive_file_names = lambda: [file for file in os.listdir('data/') if file.endswith('.webarchive') or file.endswith('.htm')]
 
 
 def ensure_dir(fp):
@@ -15,11 +17,18 @@ def ensure_dir(fp):
         os.mkdir(fp)
 
 
-def parse_webarchive_as_df(fp):
+def parse_file_as_df(fp):
     ensure_dir('temp/')
-    archive = webarchive.open(fp)
-    archive.extract("temp/temp.html")
-    html_file = load_file('temp/temp.html')
+
+    is_htm = fp.endswith('.htm') == True
+
+    if is_htm:
+        html_file = load_file(fp)
+    else:
+        archive = webarchive.open(fp)
+        archive.extract("temp/temp.html")
+        html_file = load_file('temp/temp.html')
+
     soup = bs4.BeautifulSoup(html_file, 'html.parser')
 
     query = {}
@@ -27,11 +36,14 @@ def parse_webarchive_as_df(fp):
     items = soup.find_all('div', {'class': cart_entry_class})
     qtys = soup.find_all('input', {'class': qty_class})
     prices = soup.find_all('span', {'class': unit_price_class})
+    if is_htm:
+        prices = soup.find_all('span',{'class': htm_unit_price_class})
     taxes = soup.find_all('button',{'class':taxes_class})     # saving as a number because I'll only get 1 tax value per person, not per item
 
 
-    convert_tag_to_float = lambda list_of_tags: [float(tag.text.replace('$', '')) for tag in list_of_tags]
-    get_value_as_int_from_tag = lambda list_of_tags: [int(tag['value']) for tag in list_of_tags]
+    convert_tag_to_float = lambda list_of_tags: [float(tag.text.replace('$', '').replace('ea','').replace('kg','')) for tag in list_of_tags]
+    # remove_metric = lambda list_of_tags: [elem.replace('kg','') for elem in list_of_tags] # remove any metric symbols
+    get_value_as_int_from_tag = lambda list_of_tags: [int(elem['value'].rstrip('kg')) for elem in qtys]
     get_text_from_tag = lambda list_of_tags: [tag.text for tag in list_of_tags]
 
 
@@ -39,6 +51,8 @@ def parse_webarchive_as_df(fp):
     query['qtys'] = get_value_as_int_from_tag(qtys)
     # prices returns all prices so grab every other one to get unit prices
     query['prices'] = convert_tag_to_float(prices[1::2])
+    if is_htm:
+        query['prices'] = convert_tag_to_float(prices)
 
     taxes = convert_tag_to_float(taxes)
     return pd.DataFrame(query),taxes[0] # return the df and the taxes
@@ -90,7 +104,7 @@ def prepare_csv(data):
         qtys_str= person +qty_tag
         df = get_df(person)
         df = df.set_index('items')
-        csv_data = csv_data.merge(df['qtys'], left_index=True, right_index=True, how='left').head().rename(columns={'qtys': qtys_str}).fillna(0)
+        csv_data = csv_data.join(df['qtys'],how='outer').rename(columns={'qtys': qtys_str}).fillna(0)
         csv_data[total_str] = csv_data['Unit Price']*csv_data[qtys_str]
 
     csv_data = csv_data.reset_index() # temorarily move the item index away
@@ -98,7 +112,7 @@ def prepare_csv(data):
     csv_data = csv_data.append(csv_data.sum(axis=0, numeric_only=True), ignore_index=True) # add totals row
     csv_data.iloc[-2, 0] = 'Taxes:' # name the last entry in Items as TOTALS so the row makes sense
     csv_data.iloc[-1, 0] = 'Grand Totals:' # name the last entry in Items as TOTALS so the row makes sense
-    csv_data = csv_data.set_index('Items')
+    csv_data = csv_data.set_index('index')
     for person in people:
         csv_data.loc['Grand Totals:', person+total_tag] += get_taxes(person)
         csv_data.loc['Taxes:', person+total_tag] += get_taxes(person)
