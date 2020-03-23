@@ -11,6 +11,8 @@ Once everything has been put together, then a .csv file with everything on it wi
 ## How to use (User) ##
 If you've been sent this page and asked to follow instructions, then these are them:
 
+NB: if you're on windows, you'll need to save the file as a .htm file. 
+
 1. Shop at your leisure at your local NoFrills (important to ensure items are available).
 ![](instructional_images/find_store.png)
 2. Shop to your hearts content.
