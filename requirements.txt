@@ -25,5 +25,5 @@ six==1.14.0
 soupsieve==1.9.5
 tinysegmenter==0.3
 tldextract==2.2.2
-urllib3==1.25.8
+urllib3==1.26.5
 webarchive==0.1.2
